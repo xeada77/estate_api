@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/", getPosts);
 
-router.get("/:postId", verifyToken, getPost);
+router.get("/:postId", getPost);
 
 router.post("/", verifyToken, createPost);
 
