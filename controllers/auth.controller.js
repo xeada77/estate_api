@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     );
 
     const { password: Userpassword, ...userInfo } = user;
-    console.log(userInfo);
+    //console.log(userInfo);
 
     res.cookie("token", token, {
       httpOnly: true,
