@@ -24,8 +24,22 @@ export const getPost = async (req, res) => {
   }
 };
 export const getPosts = async (req, res) => {
+  const query = req.query;
+  //console.log(query);
   try {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+      where: {
+        type: query.type || undefined,
+        city: query.city || undefined,
+        bedroom: parseInt(query.bedroom) || undefined,
+        bathroom: parseInt(query.bathroom) || undefined,
+        property: query.property || undefined,
+        price: {
+          gte: parseInt(query.minPrice) || 0,
+          lte: parseInt(query.maxPrice) || 10000000,
+        },
+      },
+    });
     res.status(200).json({ data: posts });
   } catch (err) {
     res.status(500).json({ message: "Something went Wrong!" });
