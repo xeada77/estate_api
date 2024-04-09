@@ -29,6 +29,7 @@ export const getPosts = async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
       where: {
+        userId: query.userId || undefined,
         type: query.type || undefined,
         city: query.city || undefined,
         bedroom: parseInt(query.bedroom) || undefined,
