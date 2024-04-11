@@ -3,7 +3,8 @@ import prisma from "../lib/prisma.js";
 
 export const getPost = async (req, res) => {
   const postId = req.params.postId;
-  var saved;
+  //console.log(postId);
+
   try {
     const post = await prisma.post.findUnique({
       where: { id: postId },
@@ -18,27 +19,8 @@ export const getPost = async (req, res) => {
       },
     });
 
-    const token = req.cookies?.token;
-
-    if (token) {
-      jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, payload) => {
-        if (!err) {
-          saved = await prisma.savedPost.findUnique({
-            where: {
-              userId_postId: {
-                postId,
-                userId: payload.id,
-              },
-            },
-          });
-          console.log(saved);
-          //res.status(201);
-        }
-      });
-    }
-
     res.status(200).json({
-      data: { ...post, isSaved: saved ? true : false },
+      data: { ...post, isSaved: req.body.isSaved },
     });
   } catch (err) {
     res.status(500).json({ message: "Something went Wrong!" });

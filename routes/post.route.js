@@ -7,12 +7,13 @@ import {
   updatePost,
   deletePost,
 } from "../controllers/post.controller.js";
+import { verifySaved } from "../middleware/verifySaved.js";
 
 const router = express.Router();
 
 router.get("/", getPosts);
 
-router.get("/:postId", getPost);
+router.get("/:postId", verifySaved, getPost);
 
 router.post("/", verifyToken, createPost);
 
