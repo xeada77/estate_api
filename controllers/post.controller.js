@@ -3,7 +3,7 @@ import prisma from "../lib/prisma.js";
 
 export const getPost = async (req, res) => {
   const postId = req.params.postId;
-  //console.log(postId);
+  //console.log(req.isSaved);
 
   try {
     const post = await prisma.post.findUnique({
@@ -18,9 +18,11 @@ export const getPost = async (req, res) => {
         },
       },
     });
+    //console.log(post);
 
+    if (!post) return res.status(200).json({ message: "Post not Found!" });
     res.status(200).json({
-      data: { ...post, isSaved: req.body.isSaved },
+      data: { ...post, isSaved: req.isSaved },
     });
   } catch (err) {
     res.status(500).json({ message: "Something went Wrong!" });
