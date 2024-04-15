@@ -53,7 +53,7 @@ export const updateUser = async (req, res) => {
   }
 };
 export const deleteUser = async (req, res) => {
-  const id = req.params.userId;
+  //const id = req.params.userId;
   const tokenId = req.tokenUserId;
 
   if (id !== tokenId) return res.status(403).json({ message: "Not Allowed!" });
@@ -100,5 +100,29 @@ export const savePost = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Something went Wrong!" });
+  }
+};
+
+export const getProfilePosts = async (req, res) => {
+  const tokenId = req.tokenUserId;
+  console.log(tokenId);
+
+  //if (id !== tokenId) return res.status(403).json({ message: "Not Allowed!" });
+  try {
+    const userPosts = await prisma.post.findMany({
+      where: { userId: tokenId },
+    });
+    const saved = await prisma.savedPost.findMany({
+      where: { userId: tokenId },
+      include: {
+        post: true,
+      },
+    });
+
+    const savedPosts = saved.map((savedpost) => savedpost.post);
+    //console.log(userPosts);
+    res.status(200).json({ data: { userPosts, savedPosts } });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to get Profile Posts!" });
   }
 };
