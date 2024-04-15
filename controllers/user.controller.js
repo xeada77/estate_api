@@ -72,6 +72,9 @@ export const savePost = async (req, res) => {
   const postId = req.body.postId;
   const userId = req.tokenUserId;
 
+  console.log(postId);
+  console.log(userId);
+
   try {
     const savedPost = await prisma.savedPost.findUnique({
       where: {
@@ -85,7 +88,7 @@ export const savePost = async (req, res) => {
     if (savedPost) {
       await prisma.savedPost.delete({
         where: {
-          id: savePost.id,
+          id: savedPost.id,
         },
       });
       res.status(200).json({ message: "Post remove from saved list" });
@@ -105,7 +108,7 @@ export const savePost = async (req, res) => {
 
 export const getProfilePosts = async (req, res) => {
   const tokenId = req.tokenUserId;
-  console.log(tokenId);
+  //console.log(tokenId);
 
   //if (id !== tokenId) return res.status(403).json({ message: "Not Allowed!" });
   try {
@@ -119,9 +122,14 @@ export const getProfilePosts = async (req, res) => {
       },
     });
 
-    const savedPosts = saved.map((savedpost) => savedpost.post);
+    const savedPosts = saved.map((savedPost) => {
+      savedPost.post.isSaved = true;
+      return savedPost.post;
+    });
     //console.log(userPosts);
-    res.status(200).json({ data: { userPosts, savedPosts } });
+    res.status(200).json({
+      data: { userPosts, savedPosts },
+    });
   } catch (err) {
     res.status(500).json({ message: "Failed to get Profile Posts!" });
   }

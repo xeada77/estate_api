@@ -8,6 +8,7 @@ import {
   getProfilePosts,
 } from "../controllers/user.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
+import { verifySaved } from "../middleware/verifySaved.js";
 
 const router = express.Router();
 
